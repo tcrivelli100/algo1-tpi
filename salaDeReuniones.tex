@@ -303,7 +303,7 @@ El entregable debe estar compuesto por todos los archivos necesarios para leer y
 
     \pred{audioInterpolado}{a: audio, $a_0$: audio}{
         |a| = 2 * |a_0|-1 \yLuego \\
-        ((\forall i:\ent) \ (0 \leq i < |a| \y i \ mod \ 2 = 1 \implicaLuego \floor{a[i-1] + a[i+1]) / 2} = a[i])) \y \\
+        ((\forall i:\ent) \ (0 \leq i < |a| \y i \ mod \ 2 = 1 \implicaLuego \floor{(a[i-1] + a[i+1]) / 2} = a[i])) \y \\
         (\forall i:\ent) \ 0 \leq i < |a_0| \implicaLuego a_0[i] = a[2*i]
     }
 \end{proc}
@@ -404,10 +404,10 @@ El entregable debe estar compuesto por todos los archivos necesarios para leer y
 \\\tab \y  duraMasDe(1.0, a, freq))
 \\}
 
-\pred{intervalosValidos}{intervalos : \TLista{intervalo}, durTotal : tiempo}{\\
+\pred{intervalosValidos}{intervalos : \TLista{intervalo}, durTotal : tiempo, freq : \ent}{\\
 	\tab intervalosEnRango(intervalos, durTotal) \\
     \tab \y enOrden(intervalos) \\
-    \tab \y \,todosConPrecision(intervalos, 2)}
+    \tab \y \,todosConPrecisionEnMuestra(intervalos, freq)}
 
 \pred{intervalosEnRango}{intervalos : \TLista{intervalo}, durTotal : tiempo}{\\ \tab (\forall i : intervalo) \
 intervaloEnRango(i, durTotal)}
@@ -418,11 +418,13 @@ intervaloEnRango(i, durTotal)}
 \tab (\forall i, j : \ent) \
 0 \leq i < j < |intervalos| \implicaLuego intervalos[i]_1 < intervalos[j]_0}
 
-\pred{todosConPrecision}{intervalos : \TLista{intervalo}, precision : \ent}{\\
+\pred{todosConPrecisionEnMuestra}{intervalos : \TLista{intervalo}, freq : \ent}{\\
 \tab (\forall p : intervalo) \
-p \in intervalos \implicaLuego (conPrecision(p_0, precision) \y conPrecision(p_1, precision)}
+p \in intervalos \implicaLuego (conPrecisionEnMuestra(p_0, freq) \y conPrecisionEnMuestra(p_1, freq)}
 
-    \pred{conPrecision}{t : tiempo, p : \ent}{\floor{t * 10^p} / 10^p = t}
+\pred{conPrecisionEnMuestra}{t : tiempo, freq : \ent}{t = (\floor{freq * t} / freq) }
+
+\pred{conPrecision}{t : tiempo, p : \ent}{\floor{t * 10^p} / 10^p = t}
 
 \pred{freqValida}{freq: \ent}{
 	freq \geq 4
@@ -458,7 +460,7 @@ p \in intervalos \implicaLuego (conPrecision(p_0, precision) \y conPrecision(p_1
 \pred{esSilencio}{a: audio, inter : intervalo, freq: \ent, umbral: amplitud}{
 \\
 \tab intervaloEnRango(inter, duracion(a, freq) \implicaLuego \\
-\tab \tab (inter_1 - inter_0 > 0.1 \y conPrecision(inter_0, 2) \y conPrecision(inter_1, 2)) \yLuego \\
+\tab \tab (inter_1 - inter_0 > 0.1 \y conPrecisionEnMuestra(inter_0, freq) \y conPrecisionEnMuestra(inter_1, freq)) \yLuego \\
 \tab \tab (\forall k:\ent) \ indiceEnTiempo(inter_0, freq) \leq k \leq indiceEnTiempo(inter_1, freq) \implicaLuego  \\
 	\tab \tab	\tab abs(a[k]) < umbral \\
      \tab \tab  \tab \y  indiceEnTiempo(inter_0, freq) \neq 0 \implicaLuego a[indiceEnTiempo(inter_0, freq)-1] \geq umbral \\
