@@ -38,8 +38,8 @@ bool hayQuilombo(sala m, int prof, int freq, int umbral){
     return false;
 }
 
-/************************** EJERCICIO sacarPausas **************************/
-audio sacarPausas(audio s, lista_intervalos sil, int freq, int prof, int umbral) {
+/************************** EJERCICIO sinSilencios **************************/
+audio sinSilencios(audio s, lista_intervalos sil, int freq, int prof, int umbral) {
     audio result;
     return result;
 }
