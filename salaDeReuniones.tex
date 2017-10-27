@@ -1,0 +1,500 @@
+\documentclass[a4paper]{article}
+
+%\usepackage{bbm}
+\usepackage{url}
+\usepackage{framed}
+
+\setlength\parindent{0pt}
+
+\input{../../../macros/Algo1Macros}
+
+\decimalpoint
+
+\lstset{language=C++,
+                basicstyle=\ttfamily,
+                keywordstyle=\color{blue}\ttfamily,
+ morekeywords={audio, intervalo, lista_intervalos, distancias, sala, string, tiempo, vector, tuple},
+ stringstyle=\color{red}\ttfamily,
+                commentstyle=\color{green}\ttfamily,
+                morecomment=[l][\color{magenta}]{\#}
+}
+
+\newcounter{saveenumi}
+\newcommand{\seti}{\setcounter{saveenumi}{\value{enumi}}}
+\newcommand{\conti}{\setcounter{enumi}{\value{saveenumi}}}
+\newcommand{\floor}[1]{\lfloor #1 \rfloor}
+\newcommand{\tab}{~ \qquad}
+
+\newcommand{\comen}[2]{%
+\begin{framed}
+\noindent \textsf{#1:} #2
+\end{framed}
+
+}
+
+
+
+\begin{document}
+
+
+\materia{Algoritmos y Estructura de Datos I}
+\cuatrimestre{2}
+\anio{2017}
+
+\fecha{Versión 3.1: 25 de Octubre}
+
+\nombre{TPI - Sala de Reuniones}
+
+\titulotp
+
+
+En esta oportunidad, deberán implementar varias de las funciones especificadas para el Trabajo Práctico de Especificación ``Sala de Reuniones'' en lenguaje imperativo (C++). Para realizar este trabajo contarán con conversaciones reales en donde podrán probar sus funciones, ya sea a través de pruebas manuales o tests.
+
+En nuestra implementación y especificación, contaremos con los siguientes renombres de tipos:
+
+\begin{lstlisting}
+typedef vector<int> audio;
+typedef vector<audio> sala;
+typedef float tiempo;
+typedef tuple<float,float> intervalo;
+typedef vector<intervalo> lista_intervalos;
+typedef vector<float> distancias;
+\end{lstlisting}
+
+
+\section{Ejercicios}
+
+\subsection{Parte 1: Funciones vistas}
+
+Para el TPI se requiere que se implementen las siguientes funciones, ya presentadas durante el TPE, siguiendo la especificación \textbf{provista por la cátedra}.
+
+\begin{enumerate}
+\item
+\lstinline{bool esGrabacionValida(audio vec, int prof, int freq);}
+\item
+\lstinline{int elAcaparador(sala m, int freq, int prof);}
+
+\item
+\lstinline{sala ardillizar(sala m, int freq, int prof);}
+
+\item \lstinline{sala flashElPerezoso(sala m, int freq, int prof);}
+
+\item \lstinline{vector<intervalo> silencios(audio vec, int freq, int prof, int umbral);}
+
+\item \lstinline{bool hayQuilombo(sala m, int freq, int prof, int umbral);}
+    \seti
+
+\end{enumerate}
+
+
+\subsection{Parte 2: Nuevas funcionalidades}
+
+
+
+\begin{enumerate}
+\conti
+\item Con el propósito de poder comparar nuestro algoritmo de detección de silencios con los silencios reales en la conversación, se pide implementar la siguiente función:\\
+\lstinline{float compararSilencios(audio vec, int freq, int prof, int locutor, int umbralSilencio);} \\
+Este procedimiento (que no posee especificación explícita) evalúa los resultados devueltos por \textbf{silencios} comparándolo contra silencios reales en la conversación. Se necesita que este procedimiento cumpla con los siguientes pasos:
+\begin{enumerate}
+\item Usando I/O cargar los intervalos de habla de los archivos de los locutores en la carpeta \textbf{datos}.
+Los nombres de los archivos son \textbf{habla\_spkX.txt} donde la X indica el numero del locutor (un entero entre 0 y 5).
+Cada línea de estos archivos posee el tiempo de inicio y fin de cada intervalo de habla para el locutor dado. Por ejemplo, el siguiente caso se trata de una persona que habla en 3 intervalos distintos de tiempo.
+\begin{lstlisting}
+0.02 0.04
+0.07 0.11
+0.12 0.13
+\end{lstlisting}
+Suponer que el archivo de entrada contendrá intervalos ordenados con números y que todo intervalo será válido, en rango y disjunto con el resto.
+
+\item Implementar y utilizar la función \textbf{enmascarar} que convierte la lista de intervalos (t0, tf) a una máscara (vector booleanos) que represente si hay habla o no cada 10 milisegundos (es decir, la longitud de la máscara será 100 veces la duración del audio en segundos). Por ejemplo, para el caso anterior, si suponemos que la duración del audio es 0.15 segundos, la máscara resultante será $<$F, F, T, T, F, F, F, T, T, T, T, F, T, F, F$>$. Ver especificación para más detalles.
+
+\item Implementar y utilizar una función \textbf{negacionLogica} que a partir de la máscara anterior, genere una máscara inversa. Ver especificación.
+
+\item Convertir a máscara de silencios los intervalos de silencios detectados por el algoritmo (con el umbral pasado como parámetro). Para ello utilizar \textbf{silencios} y \textbf{enmascarar}.
+
+\item Comparar las mascaras obtenidas. Para ello, computaremos la cantidad de \textbf{verdaderos positivos}\footnote{vp = cantidad de T detectados que eran T realmente}, \textbf{verdaderos negativos}\footnote{vn = cantidad de F detectados que eran F realmente}, \textbf{falsos positivos}\footnote{fp = cantidad de T detectados que eran F realmente} y \textbf{falsos negativos}\footnote{fp = Cantidad de F detectados que eran T realmente}. Luego, a partir de estos números computar el F1 score. F1-score se define como: \begin{displaymath}
+	F_1 = 2\times\frac{precision\times recall}{precision+recall}
+\end{displaymath}
+donde $precision = vp / (vp+fp)$ y $recall = vp / (vp+fn)$.
+El estadístico F1 es mejor si es cercano a 1. El peor valor de F1 es 0.
+
+Finalmente, la salida de la función \textbf{compararSilencios} será la métrica F1-score aplicada a los valores calculados para ese locutor.
+
+\item Implementar la funcion \lstinline{float resultadoFinal(sala m, int freq, int prof, int umbralSilencio);} que determina el $F1$-score promedio entre todos los locutores.
+
+\item \textbf{opcional} (por la gloria) \\
+Encontrar, para el algoritmo propuesto, el mejor umbral de silencio posible.
+Además, probar variando duración mínima del silencio, tomando en cuenta si en otro canal se detectó o no silencio, etc. para lograr mejorar la puntuación de $F1-score$ promedio.
+
+Para pensar:
+\begin{itemize}
+\item El audio que les otorgamos representa una parte de una conversación real. Teniendo este dato, >piensan que las mejoras propuestas funcionarán para el resto de la conversación?
+\end{itemize}
+\end{enumerate}
+
+
+\item \begin{lstlisting}
+audio sinSilencio(audio vec, int freq, int prof);
+\end{lstlisting}
+Esta función elimina los silencios del audio. El nuevo audio, cuya longitud puede ser menor o igual que el original, no contiene ningún silencio. Ver especificación. Se recomienda probar esta funcionalidad (ya sea con las conversaciones que provee el TP o audios propios convertidos al formato requerido).
+
+\item En el área del procesamiento de habla, es muy común intentar buscar apariciones de señal dentro de otra. Esto ocurre por ejemplo cuando en una sala con más de un micrófono se quiere saber qué persona produjo cada palabra.
+
+A continuación deberán implementar la función \begin{lstlisting}
+int encontrarAparicion(audio target, audio s, int freq,	int prof);
+\end{lstlisting}
+
+Esta función deberá devolver el índice en la cuál comience la subsecuencia de la señal $s$ que más se parezca a la señal $target$.
+
+Hay distintos métodos para comparar dos señales, en este caso utilizaremos la correlación entre señales (función provista por la cátedra). Ver especificación para más detalles.
+
+
+
+\item Por último, aprovechando que sabemos buscar apariciones de señales en señales y que se cuenta con un micrófono en medio de la sala capturando todo lo que ocurre alrededor, nos convertiremos en físicos por un día y calcularemos la distancia a cada micrófono desde la persona que habló ¡utilizando la velocidad del sonido!
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{img/locutores.pdf}
+\end{center}
+\end{figure}
+
+Se pide implementar la función
+\begin{lstlisting}
+vector<float> medirLaDistancia(sala m, audio frase, int freq, int prof);
+\end{lstlisting}
+Esta función recibirá como parámetro una subsecuencia de audio capturada por el micrófono ambiente, que registra las voces de la sala de reuniones.
+
+Las tareas que tiene que realizar esta función son:
+\begin{itemize}
+\item Encontrar el locutor $i$ que dijo la frase.
+\item Calcular la distancia de los otros locutores $j$ al locutor $i$.
+\end{itemize}
+
+
+
+
+El locutor que dijo la frase será aquel con la intensidad media mayor en el fragmento de audio que corresponde a la máxima correlación con la señal recibida por parámetro.
+
+Luego, se debe calcular las distancias de los otros locutores a este locutor a partir de la demora de tiempo encontrado comparando contra el hablante.
+
+La salida es una lista de distancias al locutor ordenadas según el orden de $m$.
+
+Se asume que los registros de los locutores, tomados a partir los headsets, están a la misma distancia de la boca y que todos los micrófonos capturan la frase.
+
+
+\end{enumerate}
+
+
+\section{Funciones Auxiliares}
+
+
+Las siguientes funciones son provistas como herramientas para leer los datos guardados en el disco, generar la \textit{matriz} de audios y también para poder guardarlos en un archivo de texto, cuando se quiera verificar el resultado.
+
+\begin{itemize}
+
+\item \lstinline{audio leerVectorAudio(string nombreArchivo); }\\
+Lee el audio completo y lo devuelve en un vector de enteros.
+
+\item  \lstinline{audio leerSubVectorAudio(string nombreArchivo, int ini, int longitud);}\\
+Lee un segmento del audio comenzando en $ini$ y con una longitud dada.
+
+\item \lstinline{void grabarVectorAudio(audio vec, string nombreArchivo);}\\
+Guarda el contenido de un vector de enteros en un archivo de texto.
+
+
+\item \lstinline{sala cargarSalaAudio(vector<string> archivos, int ini, int longitud);}\\
+Carga en la matriz (secuencia de secuencias) sala los audios correspondientes
+a un vector de nombres de archivos desde la posición $ini$.
+
+\item \lstinline{float correlacion(audio x, audio y);}\\
+Aplica la función de correlación entre las señales $x$ e $y$. Supone que las dos señales tienen la misma longitud.
+
+
+\end{itemize}
+
+\section{Herramientas y Datos}
+
+
+Como guía de implementación, el alumno tiene a sus disposición audios convertidos a txt en el directorio \textbf{datos}, y un conjunto de casos de test (test suite) para evaluar el correcto funcionamiento de la implementación.
+
+Los audios fueron descargados de la pagina de la Universidad de Columbia \url{https://www.ee.columbia.edu/~dpwe/sounds/mr/} y corresponden al proyecto \textbf{ICSI Meeting Recorder}.
+El corpus de la base son audios de 6 locutores que utilizaban headsets individuales.
+De esos audios se extrajo una muestra desde el segundo 60 hasta el segundo 180. Las transcripciones se generaron de manera que el momento 0 coincida con el momento 0 del audio recordato.
+Además se agrega un audio correspondiente a un micrófono ambiente ubicado en el centro de la mesa de la sala de reunión.
+
+En el directorio UtilesPython, se provee un script para convertir los vectores de texto a archivo .wav, y poder verificar el resultado de alguno de los ejercicios.
+Para poder correr este script en una PC que no sea del laboratorio es necesario instalar Python. En Linux y Mac vienen instalado por defecto y en Windows se recomienda instalarse la distribución Anaconda \url{https://anaconda.org/anaconda/python} de Python versión 3.
+
+
+
+\section{Entregable}
+
+\begin{enumerate}
+\item Entregar una implementación de las funciones anteriormente descritas que cumplan el comportamiento especificado en la Especificación.
+El entregable debe estar compuesto por todos los archivos necesarios para leer y ejecutar el proyecto y los casos de test adicionales propuestos por el grupo.
+\item \textbf{Importante: Utilizar la especificación dise\~nada para este TP, no la solución del TPE!}.
+\item \textbf{Importante: Es condición necesaria que esa implementación pase todos los casos de tests provistos en el directorio \textbf{tests}. Estos casos sirven de guía para la implementación, existiendo otros TESTS SUITES \textit{secretos} en posesión de la cátedra que serán usados para la corrección.}
+\item  En caso que la cobertura de líneas no sea del 100\%, extender el conjunto de casos de tests con nuevos casos de tests hasta alcanzar una cobertura de líneas de 100\%, o explicar el motivo por el que esa cobertura no puede ser alcanzada. La cobertura debe estar chequeada con  herramientas que se verán en laboratorio de la materia.
+\end{enumerate}
+
+
+\clearpage
+
+\section{Especificación}
+
+\begin{proc}{esGrabacionValida}{\In a: audio, \In prof: \ent, \In freq: \ent, \Out result: \bool}{}
+\pre{True}
+\post{result = true \leftrightarrow audioValido(a, prof, freq)}
+\end{proc}
+
+\begin{proc}{elAcaparador}{\In m: sala, \In prof: \ent, \In freq: \ent, \Out persona: \ent}{}
+\pre{salaValida(m, prof, freq) \y hayUnicoAcaparador(m, prof, freq)}
+\post{0 \leq persona < |m| \yLuego acapara(m, persona, prof, freq)}
+
+\pred{hayUnicoAcaparador}{m: sala, prof: \ent, freq: \ent}{
+    |m| > 0 \ \yLuego \ (\exists p:\ent) \ 0 \leq p < |m| \ \yLuego \ acapara(m, p, prof, freq)
+}
+
+\pred{acapara}{m: sala, p: \ent, prof: \ent, freq: \ent}{\\
+    (\forall x:\ent) \ 0 \leq x < |m| \y x \neq p \implicaLuego intensidadMedia(m[x]) < intensidadMedia(m[p])}
+
+\end{proc}
+
+\begin{proc}{ardillizar}{\In m: sala, \In prof: \ent, \In freq: \ent, \Out result: sala}{}
+    \pre{salaValida(m, prof, freq) \y esValidaAlSacarImpares(m, freq)}
+    \post{|m| = |result| \yLuego salaArdillizada(result, m)}
+
+    \pred{esValidaAlSacarImpares}{m: sala, freq: \ent}{
+		(\forall a:\ent) \ 0 \leq a < |m| \implicaLuego duraMasDe(m[a], freq, 2) \\ \y \neg hayCerosEnPosPares(m[a], freq)
+	}
+
+    \pred{hayCerosEnPosPares}{a: audio, freq: \ent}{
+	(\exists i,j: \ent) \ 0 \leq i,j < |a| \yLuego (duraMasDe(2, subseq(a,i,j), freq) \\	\y todosCerosEnPosPares(subseq(a,i,j)))
+	}
+
+	\pred{todosCerosEnPosPares}{a: audio}{
+		(\forall i: \ent) \ 0 \leq i < |a| \y i \ mod \ 2 = 0 \implicaLuego a[i] = 0
+	}
+    \pred{salaArdillizada}{m: sala, n: sala}{
+		(\forall a:\ent) \ 0 \leq a < |m| \implicaLuego audioArdillizado(m[a], n[a])
+	}
+
+	\pred{audioArdillizado}{a: audio, $a_0$: audio}{
+		|a| = \floor{(|a_0| + 1)/2} \ \yLuego \ (\forall i:\ent) \ 0 \leq i < |a| \implicaLuego a[i] = a_0[2*i]
+	}
+\end{proc}
+
+\begin{proc}{flashElPerezoso}{\In m: sala, \In prof: \ent, \In freq: \ent, \Out result: sala}{}
+    \pre{salaValida(m, prof, freq) \y esValidaAlInterpolar(m, freq)}
+    \post{|m| = |result| \yLuego salaInterpolada(result, m)}
+
+    \pred{esValidaAlInterpolar}{m: sala, freq: \ent}{
+        (\forall a:\ent) \ 0 \leq a < |m| \implicaLuego duraMasDe(0.5, m[a], freq) \\ \y \ \neg existenTodosCeros(m[a])
+    }
+
+    \pred{existenTodosCeros}{a: audio}{
+        (\exists i,j: \ent) \ 0 \leq i,j < |a| \ \y  \ duraMasDe(0.5, subseq(a, i, j), freq) \\ \y \ sonTodosCeros(subseq(a,i,j))
+    }
+
+    \pred{salaInterpolada}{m: sala, n: sala}{
+        (\forall a:\ent) \ 0 \leq a < |m| \implicaLuego audioInterpolado(m[a], n[a])
+    }
+
+    \pred{audioInterpolado}{a: audio, $a_0$: audio}{
+        |a| = 2 * |a_0|-1 \yLuego \\
+        ((\forall i:\ent) \ (0 \leq i < |a| \y i \ mod \ 2 = 1 \implicaLuego \floor{(a[i-1] + a[i+1]) / 2} = a[i])) \y \\
+        (\forall i:\ent) \ 0 \leq i < |a_0| \implicaLuego a_0[i] = a[2*i]
+    }
+\end{proc}
+
+\begin{proc}{silencios}{\In a: audio, \In prof: \ent, \In freq: \ent, \In umbral: amplitud, \Out tiempos: \TLista{intervalo}}{}
+    \pre{audioValido(a, prof, freq)}
+    \post{intervalosValidos(tiempos, duracion(a, freq)) \yLuego \\ (\forall inter: intervalo) \\
+   \tab \ inter \in tiempos \leftrightarrow esSilencio(a, inter, freq, umbral)}
+
+\end{proc}
+
+\begin{proc}{hayQuilombo}{\In m: sala, \In prof: \ent, \In freq: \ent, \In umbral: amplitud, \Out result: \bool}{}
+    \pre{salaValida(m, prof, freq)}
+    \post{result = true \leftrightarrow (\exists p1,p2: \ent) \ 0 \leq p1 < p2 < |m| \yLuego \neg  seRespetan(m, p1, p2, freq, umbral)}
+    \pred{seRespetan}{m: sala, p1: \ent, p2: \ent, freq: \ent, umbral: amplitud}{\\
+   		(\forall i: \ent) \ 0 \leq i < |m[p1]| \implicaLuego
+        \\ \tab haySilencioQueLoContiene(m[p1], i, freq, umbral) \lor haySilencioQueLoContiene(m[p2]    , i, freq, umbral)
+       }
+
+
+\end{proc}
+
+\begin{proc}{sinSilencios}{\In a: audio, freq: \ent, prof: \ent, umbral: amplitud, \Out result: audio}{}
+    \pre{audioValido(a, prof, freq) \ \y \ esValidoAlSacarSilencios(a, freq, umbral) }
+    \post{|result| = |a| - cantSilencios(a, freq, umbral, |a|-1) \ \yLuego \\ \tab
+    (\forall i: \ent) (\ 0 \leq i < |a| \ \yLuego \ \neg haySilencioQueLoContiene(a, i, freq, umbral)) \implicaLuego \\ \tab \tab a[i] = result[i-cantSilencios(a, freq, umbral, i)]}
+
+    \pred{esValidoAlSacarSilencios}{a: audio, freq: \ent, umbral: \ent}{\\
+    	enSegundos(|a| - cantSilencios(a, freq, umbral), freq) > 1.0}
+
+    \aux{cantSilencios}{a: audio, freq: \ent, umbral: \ent, hasta: \ent}{\ent}{\\ \sum_{i=0}^{hasta} \IfThenElse{haySilencioQueLoContiene(a, i, freq, umbral)}{1}{0}}
+
+\end{proc}
+
+\begin{proc}{encontrarAparicion}{\In s: audio, \In target: audio, \In freq: \ent, \In prof: \ent, \Out res: \ent}{}
+\pre{audioValido(s, prof, freq) \ \y \ audioValido(target, prof, freq) \ \y |s| \geq |target|}
+\post{res = comienzoCorrelacion(target, s))}
+\end{proc}
+
+\begin{proc}{medirLaDistancia}{\In m: sala, \In frase: audio, \In freq: \ent, \In prof: \ent, \Out res: (\ent, \TLista{\float})}{}
+    \pre{salaValida(m, prof, freq) \ \yLuego \ alguienLoDijo(m, frase) \ \y \\ (\forall a:audio) \ 0 \leq a < |m| \implicaLuego hayMaximaCorrelacion(m[a], frase) }
+    \post{0 \leq res_0 < |m| \ \yLuego \ esElQueLoDijo(res_0, m, frase) \ \y \ |res_1| = |m| \ \yLuego \\
+    sonLasDistanciasAP(m, res_0, res_1, frase, freq)}
+
+    \pred{alguienLoDijo}{m: sala, frase: audio}{
+        (\exists p:\ent) \ 0 \leq p < |m| \yLuego esElQueLoDijo(p, m, frase) \ \y \\
+        loDijoAntesQueTodos(m, p, frase)
+    }
+
+    \pred{esElQueLoDijo}{p: \ent, m: sala, frase: audio}{
+        (\forall x:\ent) \ 0 \leq x < |m| \ \y \ x \neq p \implicaLuego  \\
+        intensidadCorrelacion(m[x], frase) < intensidadCorrelacion(m[p], frase)
+    }
+
+    \pred{loDijoAntesQueTodos}{m: sala, p: \ent, frase: audio}{
+    	(\forall x: \ent) \ 0 \leq x < |m|\ \y \ x \neq p \implicaLuego \\
+        comienzoCorrelacion(m[x], frase) > comienzoCorrelacion(m[p], frase)
+    }
+
+    \aux{intensidadCorrelacion}{a: audio, frase: audio}{\float}{ \\
+        \sum_{i=0}^{|a|-|frase|} \IfThenElse{esMaximaCorrelacion(a, i, frase)}{intensidadMedia(subseq(a, i, i+|frase|))}{0}
+    }
+
+    \pred{sonLasDistanciasAP}{m: sala, p: \ent, distancias: \TLista{\float}, frase: audio, freq: \ent}{\\
+        (\forall i:\ent) \ 0 \leq i < |distancias| \implicaLuego distancias[i] = distanciaAP(m, i, p, freq, frase)
+    }
+
+    \aux{distanciaAP}{m: sala, p1: \ent, p2: \ent, freq: \ent, frase: audio}{\float}{\\
+        abs(comienzoCorrelacion(m[p1], frase) - comienzoCorrelacion(m[p2], frase)) * velSonido / freq
+    }
+
+    \aux{velSonido}{}{\float}{343,2}
+
+\end{proc}
+
+\begin{proc}{enmascarar}{\In dur : tiempo, \In tiempos : \TLista{intervalo}, \Out mascara: \TLista{\bool}}{}
+\pre{intervalosValidos(tiempos) \y (conPrecision(dur, 2) \y dur > 0}
+\post{|mascara| = 100 * dur) \yLuego (\forall i:\ent) \ 0 \leq i < |mascara| \implicaLuego mascara[i] = (\exists t : intervalo) \, t \in tiempos \y t_0 \leq tiempoEnPosicion(i) < t_1}
+
+\aux{tiempoEnPosicion}{i : \ent}{tiempo}{i / 100}
+\end{proc}
+
+\begin{proc}{negacionLogica}{\Inout mascara: \TLista{\bool}}{}
+\pre{mascara_0 = mascara}
+\post{|mascara_0| = |mascara| \yLuego (\forall i : \ent) \ 0 \leq i < |mascara| \implicaLuego mascara[i] = \neg mascara_0[i]}
+\end{proc}
+
+
+
+\subsection{Auxiliares generales}
+
+\pred{audioValido}{a: audio, prof: \ent, freq: \ent}{
+	\\
+\tab	freqValida(freq)  \yLuego (
+\\\tab enRango(a, prof)
+\\\tab \y profValida(prof)
+\\\tab \y micFunciona(a, freq)
+\\\tab \y  duraMasDe(1.0, a, freq))
+\\}
+
+\pred{intervalosValidos}{intervalos : \TLista{intervalo}, durTotal : tiempo, freq : \ent}{\\
+	\tab intervalosEnRango(intervalos, durTotal) \\
+    \tab \y enOrden(intervalos) \\
+    \tab \y \,todosConPrecisionEnMuestra(intervalos, freq)}
+
+\pred{intervalosEnRango}{intervalos : \TLista{intervalo}, durTotal : tiempo}{\\ \tab (\forall i : intervalo) \
+intervaloEnRango(i, durTotal)}
+
+\pred{intervaloEnRango}{i : intervalo, durTotal : tiempo}{0 \leq i_0 < i_1 < durTotal}
+
+\pred{enOrden}{intervalos : \TLista{intervalo}}{\\
+\tab (\forall i, j : \ent) \
+0 \leq i < j < |intervalos| \implicaLuego intervalos[i]_1 < intervalos[j]_0}
+
+\pred{todosConPrecisionEnMuestra}{intervalos : \TLista{intervalo}, freq : \ent}{\\
+\tab (\forall p : intervalo) \
+p \in intervalos \implicaLuego (conPrecisionEnMuestra(p_0, freq) \y conPrecisionEnMuestra(p_1, freq)}
+
+\pred{conPrecisionEnMuestra}{t : tiempo, freq : \ent}{t = (\floor{freq * t} / freq) }
+
+\pred{conPrecision}{t : tiempo, p : \ent}{\floor{t * 10^p} / 10^p = t}
+
+\pred{freqValida}{freq: \ent}{
+	freq \geq 4
+}
+
+\pred{enRango}{a: audio, prof: \ent}{
+	(\forall \ x: \ent) \ x \in a \implica -2^{(prof-1)} \leq x \leq 2^{(prof-1)} -1
+}
+
+\pred{profValida}{prof: \ent}{
+	prof = 16 \lor prof = 32
+  }
+
+
+
+\pred{micFunciona}{a: audio, freq: \ent}{
+	\neg(\exists i,j:\ent) \ duraMasDe(1, subseq(a, i, j), freq) \ \y \ sonTodosCeros(subseq(a, i, j))
+}
+
+\pred{sonTodosCeros}{s: \TLista{\ent}}{
+	(\forall i:\ent) \ i \in s \implica i = 0
+}
+
+
+\pred{salaValida}{m: sala, prof: \ent, freq: \ent}{
+	esMatriz(m) \y (\forall a: \ent) \ 0 \leq a < |m| \implicaLuego audioValido(m[a], prof, freq)
+}
+
+\pred{esMatriz}{m: sala}{
+	(\forall a: \ent) \ 0 \leq a < |m| \implicaLuego |m[a]| = |m[0]|
+}
+
+\pred{esSilencio}{a: audio, inter : intervalo, freq: \ent, umbral: amplitud}{
+\\
+\tab intervaloEnRango(inter, duracion(a, freq) \implicaLuego \\
+\tab \tab (inter_1 - inter_0 > 0.1 \y conPrecisionEnMuestra(inter_0, freq) \y conPrecisionEnMuestra(inter_1, freq)) \yLuego \\
+\tab \tab (\forall k:\ent) \ indiceEnTiempo(inter_0, freq) \leq k \leq indiceEnTiempo(inter_1, freq) \implicaLuego  \\
+	\tab \tab	\tab abs(a[k]) < umbral \\
+     \tab \tab  \tab \y  indiceEnTiempo(inter_0, freq) \neq 0 \implicaLuego a[indiceEnTiempo(inter_0, freq)-1] \geq umbral \\
+      \tab \tab \tab \y indiceEnTiempo(inter_1, freq) \neq |a| - 1 \implicaLuego a[indiceEnTiempo(inter_1, freq)+1] \geq umbral
+\\}
+
+\pred{haySilencioQueLoContiene}{a : audio, i : \ent, freq : \ent, umbral : \ent}{\\
+     	(\exists inter: intervalo) (intervaloEnRango(inter, duracion(a, freq)) \yLuego
+        \\ \tab inter_0 \leq enSegundos(i, freq) < inter_1 \y
+        \\ \tab esSilencio(a, inter, freq, umbral)}
+
+
+\aux{intensidadMedia}{a: audio}{\float}{\sum_{i=0}^{|a|-1} abs(a[i]) / |a|}
+
+\aux{indiceEnTiempo}{t : tiempo, freq : \ent}{\ent}{\floor{freq * t}}
+\pred{duraMasDe}{t: tiempo, a: audio, freq: \ent}{
+	duracion(a, freq) > t
+}
+
+
+\aux{enSegundos}{n : \ent, freq : \ent}{tiempo}{n / freq}
+
+\aux{duracion}{a : audio, freq : \ent}{tiempo}{enSegundos(|a|, freq)}
+
+\pred{hayMaximaCorrelacion}{a: audio, frase: audio}{
+(\exists i:\ent) \ 0 \leq i < |a|-|frase| \implicaLuego esMaximaCorrelacion(a, i, frase)
+}
+
+\pred{esMaximaCorrelacion}{a: audio, startPoint: \ent, frase: audio}{
+(\forall i:\ent) \ 0 \leq i < |a| - |frase| \ \y \ i \neq startPoint \implicaLuego correlacion(subseq(a,i,i+|frase|), frase) < correlacion(subseq(a,startPoint,startPoint+|frase|), frase)
+}
+
+\aux{comienzoCorrelacion}{a: audio, frase: audio}{\ent}{
+\sum_{i=0}^{|a|-|frase|} \IfThenElse{esMaximaCorrelacion(a, i, frase)}{i}{0}
+}
+
+\end{document}
