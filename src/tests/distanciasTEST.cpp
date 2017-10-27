@@ -9,44 +9,6 @@
 using namespace std;
 
 
-TEST(distanciasTEST, subaudioLongitud) {
-    audio v = {1,2,3,4,5,6};
-    audio v2 = subAudio(v,2,2);
-    EXPECT_EQ(2,v2.size());
-}
-
-TEST(distanciasTEST, subaudioContenido) {
-    audio v = {1,2,3,4,5,6};
-    audio sv = {3,4};
-    audio v2 = subAudio(v,2,2);
-    for(int k=0;k<sv.size();k++)
-        EXPECT_EQ(sv[k],v2[k]);
-}
-
-TEST(distanciasTEST, estadisticos) {
-    audio v = {6,2,3,1};
-    float media, std;
-    calcularEstadisticos(v,media,std);
-    EXPECT_EQ(media, 3);
-    EXPECT_NEAR(std, 1.87,0.1);
-}
-
-TEST(distanciasTEST, estadisticos2) {
-    audio v = {0, 0, -3};
-    float media, std;
-    calcularEstadisticos(v, media, std);
-    EXPECT_EQ(media, -1);
-    EXPECT_NEAR(std, 1.4142, 0.1);
-}
-
-
-TEST(distanciasTEST, lecturaAudio) {
-    string nombre = "datos/spkr0.dat";
-    int frecuencia, profundidad,duracion;
-    audio spk0 = leerVectorAudio(nombre,frecuencia,profundidad,duracion);
-    EXPECT_EQ(duracion, 120);
-    EXPECT_EQ(duracion, spk0.size()/frecuencia);
-}
 
 TEST(distanciasTEST, testBEEP) {
     int frecuencia, profundidad,duracion;
@@ -75,13 +37,3 @@ TEST(distanciasTEST, testBEEP) {
     EXPECT_EQ(1,get<0>(spk));
 }
 
-TEST(distanciasTEST, leerSala) {
-    int frecuencia, profundidad,duracion;
-    vector<string> lista_archivos = {"datos/spkr0.dat",
-                                     "datos/spkr1.dat",
-                                     "datos/spkr5.dat"};
-
-    sala m = cargarSalaAudio(lista_archivos,frecuencia,profundidad,duracion,10,1000);
-
-    EXPECT_EQ(m[2].size(),1000);
-}
