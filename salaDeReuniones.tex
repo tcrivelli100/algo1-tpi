@@ -6,7 +6,7 @@
 
 \setlength\parindent{0pt}
 
-\input{../../../macros/Algo1Macros}
+\input{Algo1Macros}
 
 \decimalpoint
 
@@ -461,10 +461,10 @@ p \in intervalos \implicaLuego (conPrecisionEnMuestra(p_0, freq) \y conPrecision
 \\
 \tab intervaloEnRango(inter, duracion(a, freq) \implicaLuego \\
 \tab \tab (inter_1 - inter_0 > 0.1 \y conPrecisionEnMuestra(inter_0, freq) \y conPrecisionEnMuestra(inter_1, freq)) \yLuego \\
-\tab \tab (\forall k:\ent) \ indiceEnTiempo(inter_0, freq) \leq k \leq indiceEnTiempo(inter_1, freq) \implicaLuego  \\
+\tab \tab (\forall k:\ent) \ indiceEnTiempo(inter_0, freq) \leq k < indiceEnTiempo(inter_1, freq) \implicaLuego  \\
 	\tab \tab	\tab abs(a[k]) < umbral \\
      \tab \tab  \tab \y  indiceEnTiempo(inter_0, freq) \neq 0 \implicaLuego a[indiceEnTiempo(inter_0, freq)-1] \geq umbral \\
-      \tab \tab \tab \y indiceEnTiempo(inter_1, freq) \neq |a| - 1 \implicaLuego a[indiceEnTiempo(inter_1, freq)+1] \geq umbral
+      \tab \tab \tab \y indiceEnTiempo(inter_1, freq) \neq |a| \implicaLuego a[indiceEnTiempo(inter_1, freq)] \geq umbral
 \\}
 
 \pred{haySilencioQueLoContiene}{a : audio, i : \ent, freq : \ent, umbral : \ent}{\\
