@@ -344,7 +344,7 @@ El entregable debe estar compuesto por todos los archivos necesarios para leer y
 \end{proc}
 
 \begin{proc}{medirLaDistancia}{\In m: sala, \In frase: audio, \In freq: \ent, \In prof: \ent, \Out res: (\ent, \TLista{\float})}{}
-    \pre{salaValida(m, prof, freq) \ \yLuego \ alguienLoDijo(m, frase) \ \y \\ (\forall a:audio) \ 0 \leq a < |m| \implicaLuego hayMaximaCorrelacion(m[a], frase) }
+    \pre{salaValida(m, prof, freq) \ \yLuego \ alguienLoDijo(m, frase) \ \y \\ (\forall i:\ent) \ 0 \leq i < |m| \implicaLuego hayMaximaCorrelacion(m[i], frase) }
     \post{0 \leq res_0 < |m| \ \yLuego \ esElQueLoDijo(res_0, m, frase) \ \y \ |res_1| = |m| \ \yLuego \\
     sonLasDistanciasAP(m, res_0, res_1, frase, freq)}
 
@@ -412,7 +412,7 @@ El entregable debe estar compuesto por todos los archivos necesarios para leer y
 \pred{intervalosEnRango}{intervalos : \TLista{intervalo}, durTotal : tiempo}{\\ \tab (\forall i : intervalo) \
 intervaloEnRango(i, durTotal)}
 
-\pred{intervaloEnRango}{i : intervalo, durTotal : tiempo}{0 \leq i_0 < i_1 < durTotal}
+\pred{intervaloEnRango}{i : intervalo, durTotal : tiempo}{0 \leq i_0 < i_1 \leq durTotal}
 
 \pred{enOrden}{intervalos : \TLista{intervalo}}{\\
 \tab (\forall i, j : \ent) \
