@@ -1,5 +1,3 @@
-// Version preliminar. Esto seguramente ni compile, es para tener una idea de la complejidad de los ejercicios.
-
 #include "ejercicios.h"
 #include "Funciones_TPI.h"
 #include "math.h"
@@ -8,7 +6,6 @@
 bool grabacionValida(audio s, int prof, int freq){
     return false;
 }
-
 
 /************************** EJERCICIO elAcaparador **************************/
 int elAcaparador(sala m, int freq, int prof){
@@ -39,7 +36,7 @@ bool hayQuilombo(sala m, int prof, int freq, int umbral){
 }
 
 /************************** EJERCICIO sinSilencios **************************/
-audio sinSilencios(audio s, lista_intervalos sil, int freq, int prof, int umbral) {
+audio sinSilencios(audio s, int freq, int prof, int umbral) {
     audio result;
     return result;
 }
