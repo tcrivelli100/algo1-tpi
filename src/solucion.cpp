@@ -42,7 +42,7 @@ audio sinSilencios(audio s, int freq, int prof, int umbral) {
 }
 
 /************************** EJERCICIO encontrarAparicion **************************/
-int encontrarAparicion(audio x, audio y){
+int encontrarAparicion(audio x, audio y, int freq, int prof){
     return -1;
 }
 
