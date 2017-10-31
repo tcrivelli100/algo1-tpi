@@ -113,7 +113,7 @@ Suponer que el archivo de entrada contendrá intervalos ordenados con números y
 
 \item Convertir a máscara de silencios los intervalos de silencios detectados por el algoritmo (con el umbral pasado como parámetro). Para ello utilizar \textbf{silencios} y \textbf{enmascarar}.
 
-\item Comparar las mascaras obtenidas. Para ello, computaremos la cantidad de \textbf{verdaderos positivos}\footnote{vp = cantidad de T detectados que eran T realmente}, \textbf{verdaderos negativos}\footnote{vn = cantidad de F detectados que eran F realmente}, \textbf{falsos positivos}\footnote{fp = cantidad de T detectados que eran F realmente} y \textbf{falsos negativos}\footnote{fp = Cantidad de F detectados que eran T realmente}. Luego, a partir de estos números computar el F1 score. F1-score se define como: \begin{displaymath}
+\item Comparar las mascaras obtenidas. Para ello, computaremos la cantidad de \textbf{verdaderos positivos}\footnote{vp = cantidad de T detectados que eran T realmente}, \textbf{verdaderos negativos}\footnote{vn = cantidad de F detectados que eran F realmente}, \textbf{falsos positivos}\footnote{fp = cantidad de T detectados que eran F realmente} y \textbf{falsos negativos}\footnote{fn = Cantidad de F detectados que eran T realmente}. Luego, a partir de estos números computar el F1 score. F1-score se define como: \begin{displaymath}
 	F_1 = 2\times\frac{precision\times recall}{precision+recall}
 \end{displaymath}
 donde $precision = vp / (vp+fp)$ y $recall = vp / (vp+fn)$.
