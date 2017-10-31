@@ -339,8 +339,9 @@ El entregable debe estar compuesto por todos los archivos necesarios para leer y
 \end{proc}
 
 \begin{proc}{encontrarAparicion}{\In s: audio, \In target: audio, \In freq: \ent, \In prof: \ent, \Out res: \ent}{}
-\pre{audioValido(s, prof, freq) \ \y \ audioValido(target, prof, freq) \ \y |s| \geq |target|}
+\pre{audioValido(s, prof, freq) \ \y \ audioValido(target, prof, freq) \ \y |s| \geq |target| \yLuego existeUnicoMaximo(s, target)}
 \post{res = comienzoCorrelacion(target, s))}
+\pred{existeUnicoMaximo}{s : audio, target : audio}{(\exists i:\ent) \ 0 \leq i < |a| - |target| \yLuego esMaximaCorrelacion(s, i, target)}
 \end{proc}
 
 \begin{proc}{medirLaDistancia}{\In m: sala, \In frase: audio, \In freq: \ent, \In prof: \ent, \Out res: (\ent, \TLista{\float})}{}
