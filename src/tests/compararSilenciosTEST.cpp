@@ -11,7 +11,7 @@ TEST(compararSilenciosTEST, speaker0) {
 
     float f1 = compararSilencios(orig, frecuencia, profundidad, 0, 10000);
 
-    EXPECT_NEAR(f1, 0.89, 0.01);
+    EXPECT_NEAR(f1, 0.90, 0.01);
 
 }
 
@@ -27,6 +27,6 @@ TEST(resultadoFinalTEST, all_speakers) {
     sala m = cargarSalaAudio(lista_archivos,frecuencia,profundidad,duracion);
     float f1 = resultadoFinal(m, frecuencia, profundidad, 15000);
 
-    EXPECT_NEAR(f1, 0.77, 0.01);
+    EXPECT_NEAR(f1, 0.80, 0.01);
 
 }
