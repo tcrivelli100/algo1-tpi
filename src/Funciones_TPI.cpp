@@ -115,7 +115,7 @@ audio subAudio(audio in, int ini, int longitud) {
 float correlacion(audio x, audio y) {
     int y_nelem = y.size();
     float x_media, y_media, x_std, y_std;
-    float corr;
+    float corr = 0;
     // actualizo los estadisticos de la seccion de x
     calcularEstadisticos(x,x_media,x_std);
     calcularEstadisticos(y,y_media,y_std);
@@ -125,4 +125,3 @@ float correlacion(audio x, audio y) {
     corr = y_std > 0 && x_std > 0 ? corr / y_nelem / (y_std * x_std) : 0;
     return corr;
 }
-

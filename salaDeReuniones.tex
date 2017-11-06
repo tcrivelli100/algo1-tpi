@@ -142,7 +142,7 @@ Esta función elimina los silencios del audio. El nuevo audio, cuya longitud pue
 \item En el área del procesamiento de habla, es muy común intentar buscar apariciones de señal dentro de otra. Esto ocurre por ejemplo cuando en una sala con más de un micrófono se quiere saber qué persona produjo cada palabra.
 
 A continuación deberán implementar la función \begin{lstlisting}
-int encontrarAparicion(audio target, audio s, int freq,	int prof);
+int encontrarAparicion(audio s, audio target, int freq,	int prof);
 \end{lstlisting}
 
 Esta función deberá devolver el índice en la cuál comience la subsecuencia de la señal $s$ que más se parezca a la señal $target$.
@@ -161,7 +161,7 @@ Hay distintos métodos para comparar dos señales, en este caso utilizaremos la 
 
 Se pide implementar la función
 \begin{lstlisting}
-vector<float> medirLaDistancia(sala m, audio frase, int freq, int prof);
+tuple<int, distancias> medirLaDistancia(sala m, audio frase, int freq, int prof);
 \end{lstlisting}
 Esta función recibirá como parámetro una subsecuencia de audio capturada por el micrófono ambiente, que registra las voces de la sala de reuniones.
 
