@@ -51,3 +51,12 @@ tuple<int,lista_distancias> medirLaDistancia(sala m, audio frase, int freq, int 
     tuple<int,lista_distancias> out;
     return out;
 }
+/************************** EJERCICIO compararSilencios **************************/
+float compararSilencios(audio x, int freq, int prof, int locutor, int umbralSilencio){
+  return 0.1;
+}
+
+/************************** EJERCICIO resultadoFinal **************************/
+float resultadoFinal(sala m, int freq, int prof, int umbralSilencio){
+  return 0.1;
+}

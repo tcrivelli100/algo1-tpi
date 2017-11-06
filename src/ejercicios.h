@@ -19,4 +19,8 @@ locutor medirLaDistancia(sala m, audio frase, int freq, int prof);
 int encontrarAparicion(audio x, audio y, int freq, int prof);
 audio sinSilencios(audio s, int freq, int prof, int umbral);
 
+float compararSilencios(audio x, int freq, int prof, int locutor, int umbralSilencio);
+float resultadoFinal(sala m, int freq, int prof, int umbralSilencio);
+
+
 #endif //SALADEREUNION_EJERCICIOS_H
