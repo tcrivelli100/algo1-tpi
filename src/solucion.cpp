@@ -47,7 +47,7 @@ int encontrarAparicion(audio x, audio y, int freq, int prof){
 }
 
 /************************** EJERCICIO medirLaDistancia **************************/
-locutor medirLaDistancia(sala m, audio frase, int freq, int prof){
-    locutor out;
+tuple<int,lista_distancias> medirLaDistancia(sala m, audio frase, int freq, int prof){
+    tuple<int,lista_distancias> out;
     return out;
 }
